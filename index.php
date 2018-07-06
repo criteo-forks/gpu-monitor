@@ -67,10 +67,16 @@
 
 <?php
 
-$HOSTS = array("fb" => "Facebook",  "pascal" => "Pascal", "chic" => "Chic <small style=\"font-size: 40%\">(CUDA 9)</small>", "nile" => "Nile", "rodgers" => "Rodgers", "pas" => "Pas", "cal" => "Cal", "titan" => "Titan", "bigcountry" => "Big Country"); // , "kepler" => "Kepler", "tesla" => "Tesla", "drunk" => "Drunk");
-$SHORT_GPU_NAMES = array("GeForce GTX TITAN X" => "Titan X Maxwell", "TITAN X (Pascal)" => "Titan X Pascal", "TITAN Xp" => "Titan Xp", "GeForce GTX 980" => "GTX 980", "Tesla P100-PCIE-16GB" => "Tesla P100");
-$SHORTER_GPU_NAMES = array("GeForce GTX TITAN X" => "X Max", "TITAN X (Pascal)" => "X Pas", "TITAN Xp" => "Xp", "GeForce GTX 980" => "GTX 980", "Tesla K20m" => "K20m", "Tesla M2090" => "M2090", "Tesla P100-PCIE-16GB" => "P100");
-$GPU_COLS_LIST = array("index", "uuid",   "name", "memory.used", "memory.total", "utilization.gpu", "utilization.memory", "temperature.gpu", "timestamp");
+$HOSTS = array(
+	"gputest001-pa4" => "gputest001-pa4",
+	"gputest002-pa4" => "gputest002-pa4",
+	"gputest003-pa4" => "gputest003-pa4",
+	"gputest004-pa4" => "gputest004-pa4");
+$SHORT_GPU_NAMES = array(
+	"Tesla M40 24GB" => "Tesla M40");
+$SHORTER_GPU_NAMES = array(
+	"Tesla M40 24GB" => "M40");
+$GPU_COLS_LIST = array("index", "uuid", "name", "memory.used", "memory.total", "utilization.gpu", "utilization.memory", "temperature.gpu", "timestamp");
 $GPU_PROC_LIST = array("timestamp", "gpu_uuid", "used_gpu_memory", "process_name", "pid");
 $CPU_COLS_LIST = array("average_use","total_nb_proc");
 
