@@ -1,4 +1,5 @@
 #!/bin/bash
+#should be in /etc/init.d
 
 case "$1" in
 start)
