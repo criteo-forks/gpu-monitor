@@ -11,8 +11,6 @@
 
     <!--<meta http-equiv="refresh" content="30">-->
 
-    <script defer src="https://pro.fontawesome.com/releases/v5.0.11/js/all.js" integrity="sha384-rAGYBPVpurUH2YLc/Skiv4TE1iQ/wAocPQdQT73UR0LEZ3Os2E3wGBn9fRISQJIK" crossorigin="anonymous"></script>
-
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -354,7 +352,9 @@ foreach ($HOSTS as $hostname => $hosttitle) {
             ?>
 
             <td class="td-comment" data-name="<?php echo $comment["name"] ?>" data-comment="<?php echo $comment["comment"] ?>" data-date="<?php echo $comment["date"] ?>" data-host="<?php echo $hostname ?>" data-id="<?php echo $gpu['index'] ?>">
-                <button class="btn btn-default btn-xs comment-btn"><i class="fas fa-pencil"></i></button>
+                <button class="btn btn-default btn-xs comment-btn">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAD9SURBVEhL7dQxagJBGMXxATstLG3scwA7Qa1jDpCrWBlBOwvBwqtIbLyCCaRKCj2AtSnU5P92/XCRXXQzE1DwwY91Bn3jzKDuFtLFAn1UNBEyL/jBG3ZYo40gsfJeNHKuilds8agJn1j5PBodU4DmtJM/H5eVG42TecAeupPcOS3PWuQduvhcySo3toi9z+7mopwrNzp/Pf+l3NzLU11PeRNpJVlylSsjfOIZX0grNbnLlSWG8UtXxgzBymvQh+vRKE4R+tl7lysDbKDSZJ7gXa58QCVTlNDCGCt4l+sv1r6lfB+euhNdfANe6cDKtRMdl+4kWCbQItrJLcW5X20EpoJsPNkwAAAAAElFTkSuQmCC">
+                </button>
                 <?php if ($comment["date"] && $comment["name"]) { ?>
                     <span class="label label-comment label-<?php echo ($date > $now) ? "danger" : "default"; ?>" data-toggle="tooltip" data-placement="top" title="<?php echo $comment["comment"]; ?>"><?php echo $comment["name"].' ('.$diff_disp.($date > $now ? "" : " ago").')'; if ($comment["comment"]) echo '&nbsp;&nbsp;<i class="fas fa-comment"></i>'; ?></span>
                 <?php } ?>
