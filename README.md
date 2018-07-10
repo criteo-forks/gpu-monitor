@@ -35,3 +35,37 @@ Simply edit the `index.php` file to each the `$HOSTS` variable and optionnaly th
 `$HOSTS` associates the hostnames with some viewable names for these hosts. The keys are the ones entered as `HOSTNAME` in the crontab above and the `<hostname>` parameter of `gpu-check`.
 
 `$SHORT_GPU_NAMES` allows you to rewrite GPU names if you want. It associates the names given by `nvidia-smi` to the names you want to be displayed.
+
+## How to add reservations
+
+To add reservations, it is possible to add booking information machine-by-machine though UI or to use `data/comments.json` with the following format:
+
+```json
+{
+  "GPU_MACHINE_NAME": [  // you could also use a dictionary instead of a list { "0": {"name": ....}, "1": {"name": ...} }
+    {  // an element with index 0, it corresponding to GPU0 of this machine
+      "name": "WHO_IS_USING_IT",
+      "date": "DATETIME_UNTIL_IT_IS_BOOKED",  // this machine will be indicated booked unless this datetime is in the past
+      "comment": "FREE_TEXT_COMMENT"
+    },
+    { // an element with index 1, it corresponding to GPU1 of this machine
+      "name": "SOMEONE_ELSE",
+      "date": "SOME_WHERE_IN_A_PAST",  // this machine is not booked, datetime is in the past
+      "comment": "booked by Père Noël"
+    }
+  ],
+  "gputest001-pa4": [  // GPU0 and GPU1 are reserved
+    {
+      "name": "sclaus",
+      "date": "2018-07-01 00:00",
+      "comment": "booked by Santa Claus"
+    },
+    {
+      "name": "pnoel",
+      "date": "2018-08-01 00:00",
+      "comment": "booked by Père Noël"
+    }
+  ],
+  "gputest002-pa4": []  // no reservation info for this machine
+}
+```
