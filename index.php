@@ -78,6 +78,8 @@ $GPU_COLS_LIST = array("index", "uuid", "name", "memory.used", "memory.total", "
 $GPU_PROC_LIST = array("timestamp", "gpu_uuid", "used_gpu_memory", "process_name", "pid");
 $CPU_COLS_LIST = array("average_use","total_nb_proc");
 
+date_default_timezone_set("Europe/Paris");
+
 if (is_file("data/comments.json"))
     $COMMENTS = json_decode(file_get_contents("data/comments.json"), true);
 else
