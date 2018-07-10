@@ -44,7 +44,7 @@ if len(pids) > 0:
 
     print(json.dumps(childs))
 
-    p = Popen(["ps", "-o", "pid,user:20,lstart", "-p", ",".join(pids + sum(list(childs.values()), []))], stdout=PIPE)
+    p = Popen(["ps", "-o", "pid,user,lstart", "-p", ",".join(pids + sum(list(childs.values()), []))], stdout=PIPE)
     data, _ = p.communicate()
     data = data.decode("utf-8")
     ind = data.find("\n")
