@@ -69,16 +69,30 @@ $HOSTS = array(
 	"gputest001-pa4" => "gputest001-pa4",
 	"gputest002-pa4" => "gputest002-pa4",
 	"gputest003-pa4" => "gputest003-pa4",
-	"gputest004-pa4" => "gputest004-pa4");
+	"gputest004-pa4" => "gputest004-pa4",
+        "gputest001-pa4.prod" => "gputest001-pa4.prod",
+        "gputest002-pa4.prod" => "gputest002-pa4.prod",
+        "gputest003-pa4.prod" => "gputest003-pa4.prod",
+        "gputest004-pa4.prod" => "gputest004-pa4.prod",
+        "gputest005-pa4.prod" => "gputest005-pa4.prod",
+        "gputest006-pa4.prod" => "gputest006-pa4.prod",
+        "gputest007-pa4.prod" => "gputest007-pa4.prod",
+        "gputest008-pa4.prod" => "gputest008-pa4.prod",
+        "gputest009-pa4.prod" => "gputest009-pa4.prod",
+        "gputest010-pa4.prod" => "gputest010-pa4.prod",
+        "gputest011-pa4.prod" => "gputest011-pa4.prod",
+        "gputest012-pa4.prod" => "gputest012-pa4.prod");
 $SHORT_GPU_NAMES = array(
-	"Tesla M40 24GB" => "Tesla M40");
+	"Tesla M40 24GB" => "Tesla M40",
+        "Tesla V100-PCIE-16GB" => "Tesla V100");
 $SHORTER_GPU_NAMES = array(
-	"Tesla M40 24GB" => "M40");
+	"Tesla M40 24GB" => "M40",
+        "Tesla V100-PCIE-16GB" => "Tesla V100");
 $GPU_COLS_LIST = array("index", "uuid", "name", "memory.used", "memory.total", "utilization.gpu", "utilization.memory", "temperature.gpu", "timestamp");
 $GPU_PROC_LIST = array("timestamp", "gpu_uuid", "used_gpu_memory", "process_name", "pid");
 $CPU_COLS_LIST = array("average_use","total_nb_proc");
 
-date_default_timezone_set("Europe/Paris");
+date_default_timezone_set("UTC");
 
 if (is_file("data/comments.json"))
     $COMMENTS = json_decode(file_get_contents("data/comments.json"), true);
@@ -213,7 +227,7 @@ foreach ($HOSTS as $hostname => $hosttitle) {
 
     $nbCpu = (int) fgets($f);
     $uptime = fgets($f);
-    preg_match("#load average: ([0-9\,]+), #", $uptime, $uptime);
+    preg_match("#load average: ([0-9\,.]+), #", $uptime, $uptime);
     $cpu = round((float)str_replace(",",".", $uptime[1]) / $nbCpu * 100);
 
     fclose($f);
@@ -350,7 +364,8 @@ foreach ($HOSTS as $hostname => $hosttitle) {
                 if ($date < $now && $diff->days > 2)
                     throw new Exception("remove, too old");
             }
-            catch (Exception $e) { $comment = array("date" => "", "name" => ""); }
+            catch (Exception $e) {
+                $comment = array("date" => "", "name" => "", "comment" => ""); }
             ?>
 
             <td class="td-comment" data-name="<?php echo $comment["name"] ?>" data-comment="<?php echo $comment["comment"] ?>" data-date="<?php echo $comment["date"] ?>" data-host="<?php echo $hostname ?>" data-id="<?php echo $gpu['index'] ?>">
