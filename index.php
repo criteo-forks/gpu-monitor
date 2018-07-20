@@ -60,7 +60,7 @@
 <?php } ?>
 
         <div class="page-header">
-            <h1>GPU Status <small class="hidden-xs">(Refreshed every 30 seconds)</small><a href="https://github.com/ThomasRobertFr/gpu-monitor" style="float:right"><img src="css/gh.png" height="20px"></a></h1>
+            <h1>GPU Status <small class="hidden-xs">(Refreshed every 30 seconds)</small><a href="https://gitlab.criteois.com/rat/gpu-monitor" style="float:right"><img src="css/gh.png" height="20px"></a></h1>
         </div>
 
 <?php
