@@ -37,13 +37,13 @@ urls = ['http://gputest001-pa4.central.criteo.preprod:8114',
         'http://gputest014-pa4.central.criteo.preprod:8114',
         'http://gputest015-pa4.central.criteo.preprod:8114',
         'http://gputest016-pa4.central.criteo.preprod:8114']
-while True:
-    try:
-        while True:
-            for url in urls:
-                list_files = get_file_names(url)
-                download_files(url, list_files)
-            time.sleep(20)
-    except:
-        time.sleep(60)
 
+while True:
+    for url in urls:
+        try:
+            list_files = get_file_names(url)
+            download_files(url, list_files)
+        except:
+            pass
+
+    time.sleep(20)
