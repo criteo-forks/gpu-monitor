@@ -15,12 +15,12 @@ sudo mkdir /tmp/gpuReadings
 sudo crontab -l > mycron
 
 echo "# Check if monitoring running each 5 min" >> mycron
-echo "*/5 * * * *  /var/opt/gpu-monitor/scripts/gpu-check.sh $(hostname).prod > /dev/null 2>&1" >> mycron
+echo "*/5 * * * *  /var/opt/gpu-monitor/scripts/gpu-check.sh $(hostname) > /dev/null 2>&1" >> mycron
 echo "# Kill and restart the monitoring each 2 hours to cleanup the ouptput files of the monitors" >> mycron
-echo "0 */2 * * *  /var/opt/gpu-monitor/scripts/gpu-check.sh kill > /dev/null 2>&1; /var/opt/gpu-monitor/scripts/gpu-check.sh $(hostname).prod > /dev/null 2>&1" >> mycron
+echo "0 */2 * * *  /var/opt/gpu-monitor/scripts/gpu-check.sh kill > /dev/null 2>&1; /var/opt/gpu-monitor/scripts/gpu-check.sh $(hostname) > /dev/null 2>&1" >> mycron
 
 sudo crontab mycron
 cat mycron
 rm mycron
 
-sudo service gpu-readings-serving start
+sudo /sbin/service gpu-readings-serving start

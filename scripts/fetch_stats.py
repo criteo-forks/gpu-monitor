@@ -25,18 +25,18 @@ def download_files(url, list_files):
 urls = ['http://gputest001-pa4.central.criteo.preprod:8114', 
         'http://gputest002-pa4.central.criteo.preprod:8114', 
         'http://gputest004-pa4.central.criteo.preprod:8114',
-        'http://gputest001-pa4.central.criteo.prod:8114',
-        'http://gputest002-pa4.central.criteo.prod:8114',
-        'http://gputest003-pa4.central.criteo.prod:8114',
-        'http://gputest004-pa4.central.criteo.prod:8114',
-        'http://gputest005-pa4.central.criteo.prod:8114',
-        'http://gputest006-pa4.central.criteo.prod:8114',
-        'http://gputest007-pa4.central.criteo.prod:8114',
-        'http://gputest008-pa4.central.criteo.prod:8114',
-        'http://gputest009-pa4.central.criteo.prod:8114',
-        'http://gputest010-pa4.central.criteo.prod:8114',
-        'http://gputest011-pa4.central.criteo.prod:8114',
-        'http://gputest012-pa4.central.criteo.prod:8114']
+        'http://gputest005-pa4.central.criteo.preprod:8114',
+        'http://gputest006-pa4.central.criteo.preprod:8114',
+        'http://gputest007-pa4.central.criteo.preprod:8114',
+        'http://gputest008-pa4.central.criteo.preprod:8114',
+        'http://gputest009-pa4.central.criteo.preprod:8114',
+        'http://gputest010-pa4.central.criteo.preprod:8114',
+        'http://gputest011-pa4.central.criteo.preprod:8114',
+        'http://gputest012-pa4.central.criteo.preprod:8114',
+        'http://gputest013-pa4.central.criteo.preprod:8114',
+        'http://gputest014-pa4.central.criteo.preprod:8114',
+        'http://gputest015-pa4.central.criteo.preprod:8114',
+        'http://gputest016-pa4.central.criteo.preprod:8114']
 while True:
     try:
         while True:
