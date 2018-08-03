@@ -1,5 +1,9 @@
+#!/bin/bash
 # Install all the needed pieces to collect and serve the status of GPU
 # To execute it, just do 'sudo /bin/bash install_nodes.sh'
+
+set -x
+set -e
 
 sudo mkdir -p /var/opt/gpu-monitor/scripts
 sudo cp ./scripts/* /var/opt/gpu-monitor/scripts
@@ -10,7 +14,6 @@ sudo chmod 755 /etc/init.d/gpu-readings-serving.sh
 sudo systemctl daemon-reload
 
 sudo mkdir /tmp/gpuReadings
-
 
 sudo crontab -l > mycron
 
