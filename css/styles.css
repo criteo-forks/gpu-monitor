@@ -23,18 +23,31 @@ button:focus, .btn:focus{
   font-size: 1rem;
 }
 
+[aria-expanded="false"] .icon-collapse::after {
+  content: 'keyboard_arrow_down';
+}
+
+[aria-expanded="true"] .icon-collapse::after {
+  content: 'keyboard_arrow_up';
+}
+
+/* ----------------------------------------- App styles */
+#btn_collapse_all[aria-expanded="false"]::before {
+  content: 'Expand all';
+}
+#btn_collapse_all[aria-expanded="true"]::before {
+  content: 'Collapse all';
+}
+
 .page-header h1 > small {
   font-size: 50%;
 }
 
-.server {
-  border-radius: 15px 15px 0 0;
-}
-.panel-container {
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  border-radius: 0 0 15px 15px;
+.server-panel {
+  border-radius: 15px;
+  border: 1px solid #343a40;
+  margin-bottom: 3rem;
+  overflow: hidden;
 }
 
 .server-refresh {

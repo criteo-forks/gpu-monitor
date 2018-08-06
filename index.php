@@ -27,6 +27,9 @@
     <div class="page-header mt-3 mb-5">
         <h1>GPU Status <small class="d-none d-sm-inline">(Refreshed every 30 seconds)</small><a href="https://gitlab.criteois.com/rat/gpu-monitor" style="float:right"><img src="css/gitlab_logo_white.svg" height="20px"></a></h1>
     </div>
+    <div class="mb-3 text-right">
+        <button id="btn_collapse_all" class="btn btn-secondary btn-sm" aria-expanded="true"></button>
+    </div>
 
 <?php
 
@@ -216,150 +219,157 @@ foreach ($HOSTS as $hostname => $hosttitle) {
 
     ?>
 
-    <div class="server bg-dark p-3 text-light">
-        <div class="d-flex d-row justify-content-between align-items-center">
-            <h5 class="mb-0">
-                <?php if ($deltaTSec < -500) { ?>
-                    <span class="badge badge-pill badge-danger mr-2" data-toggle="tooltip" data-placement="top" title="Data is not up to date for this server">
-                        <i class="material-icons">warning</i>
-                    </span>
-                <?php } ?>
-                <?php echo $hosttitle; ?>
-            </h5>
-            <div class="server-refresh">
-                <i class="material-icons">access_time</i>
-                <?php echo round($deltaT).$deltaTUnit.$deltaTDirection ?>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col d-flex">
-                <?php
-                $bar_status = "success";
-                if ($ram["usage"] > 35) $bar_status = "warning";
-                if ($ram["usage"] > 70) $bar_status = "danger";
-                ?>
-                <span class="server-prefix badge badge-secondary">RAM</span>
-                <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $ram['used'], $ram['total']); ?>">
-                    <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $ram["usage"] ?>%;" aria-valuenow="<?php echo $ram["usage"] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $ram["usage"] ?>%</div>
-                </div>
-            </div>
-            <div class="col d-flex">
-                <?php
-                $bar_status = "success";
-                if ($cpu > 35) $bar_status = "warning";
-                if ($cpu > 70) $bar_status = "danger";
-                ?>
-                <span class="server-prefix badge badge-secondary">CPU</span>
-                <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="A score > 100% means processes are waiting">
-                    <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $cpu ?>%;" aria-valuenow="<?php echo $cpu ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $cpu ?>%</div>
-                </div>
-            </div>
-            <div class="col d-flex">
-                <?php
-                $bar_status = "success";
-                if ($disk["usage"] > 35) $bar_status = "warning";
-                if ($disk["usage"] > 70) $bar_status = "danger";
-                ?>
-                <span class="server-prefix badge badge-secondary">SSD</span>
-                <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $disk['used'], $disk['total']); ?>">
-                    <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100">2<?php echo $disk["usage"] ?>%</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="panel-container mb-5 px-3 pt-3">
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th scope="col" class="col-index">#</th>
-                    <th scope="col" class="col-name">Name</th>
-                    <th scope="col" class="col-memory">Memory</th>
-                    <th scope="col" class="col-gpu">GPU</th>
-                    <th scope="col" class="col-reservation">Reservation</th>
-                    <th scope="col"><span class="d-none d-sm-inline">Processes <span class="badge badge-pill badge-secondary">pid@user (RAM)</span></span></th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($gpus as $gpu) { ?>
-                <tr>
-                    <th scope="row" class="col-index"><?php echo $gpu['index']; ?></th>
-                    <td class="col-name">
-                        <span class="d-none d-sm-inline"><?php echo $SHORT_GPU_NAMES[$gpu['name']] ? '<span data-toggle="tooltip" title="'.$gpu['name'].'">'.$SHORT_GPU_NAMES[$gpu['name']].'</span>' : $gpu['name']; ?></span>
-                        <span class="d-inline d-sm-none"><?php echo $SHORTER_GPU_NAMES[$gpu['name']] ? '<span data-toggle="tooltip" title="'.$gpu['name'].'">'.$SHORTER_GPU_NAMES[$gpu['name']].'</span>' : $gpu['name']; ?></span>
-                        (<?php echo round($gpu['memory.total'] / 1000) ?> Go)
-                    </td>
-                    <td class="align-middle col-memory">
-                        <?php
-                        $bar_status = "success";
-                        if ($gpu['memory'] > 20) $bar_status = "warning";
-                        if ($gpu['memory'] > 60) $bar_status = "danger";
-                        ?>
-                        <div class="progress" data-toggle="tooltip" data-placement="top" title="<?php echo $gpu['memory.used'].'/'.$gpu['memory.total']; ?> Mo / Access rate: <?php echo $gpu["utilization.memory"] ?>%">
-                            <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $gpu['memory'] ?>%;" aria-valuenow="<?php echo $gpu['memory'] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $gpu['memory'] ?>%</div>
-                        </div>
-                    </td>
-                    <td class="align-middle col-gpu">
-                        <?php
-                        $bar_status = "success";
-                        if ($gpu['utilization.gpu'] > 20) $bar_status = "warning";
-                        if ($gpu['utilization.gpu'] > 60) $bar_status = "danger";
-                        ?>
-                        <div class="progress" data-toggle="tooltip" data-placement="top" title="<?php echo $gpu['temperature.gpu']; ?> °C">
-                            <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $gpu['utilization.gpu'] ?>%;" aria-valuenow="<?php echo $gpu['utilization.gpu'] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $gpu['utilization.gpu'] ?>%</div>
-                        </div>
-                    </td>
-
-                    <?php
-                    try {
-                        $comment = $COMMENTS[$hostname][$gpu['index']];
-
-                        $date = date_create($comment["date"]);
-                        $now = date_create();
-                        if ($date > $now)
-                            $now->sub(new DateInterval("PT1H")); // remove 1h from now to round up diff to ceil instead of floor
-                        $diff = date_diff($now, $date);
-                        if ($diff->days >= 1)
-                            $diff_disp = $diff->format("%ad");
-                        else
-                            $diff_disp = $diff->format("%hh");
-
-                        if ($date < $now && $diff->days > 2)
-                            throw new Exception("remove, too old");
-                    }
-                    catch (Exception $e) {
-                        $comment = array("date" => "", "name" => "", "comment" => ""); }
-                    ?>
-                    <td class="td-comment text-right col-reservation" data-name="<?php echo $comment["name"] ?>" data-comment="<?php echo $comment["comment"] ?>" data-date="<?php echo $comment["date"] ?>" data-host="<?php echo $hostname ?>" data-id="<?php echo $gpu['index'] ?>">
-                        <?php if ($comment["date"] && $comment["name"]) { ?>
-                            <span class="d-inline-flex align-items-center badge badge-<?php echo ($date > $now) ? "danger" : "secondary"; ?>" data-toggle="tooltip" data-placement="top" title="<?php echo $comment["comment"]; ?>">
-                                <?php
-                                    echo $comment["name"].' ('.$diff_disp.($date > $now ? "" : " ago").')';
-                                    if ($comment["comment"]) echo '&nbsp;&nbsp;<i class="material-icons">mode_comment</i>';
-                                ?>
-                            </span>
-                        <?php } ?>
-                        <button class="reservation-btn btn btn-icon btn-sm btn-primary"><i class="material-icons">edit</i></button>
-                    </td>
-                    <td class="text-right">
-                        <span class="d-none d-sm-inline process-content">
-                        <?php foreach ($gpu["processes"] as $process) { ?>
-                            <?php
-                            $process_status = "secondary";
-                            if ($process["usage"] > 15) $process_status = "info";
-                            if ($process["usage"] > 40) $process_status = "primary";
-                            if ($process["alert"] !== false) $process_status = "danger";
-                            ?>
-                            <span class="process badge badge-<?php echo $process_status ?>" data-toggle="tooltip" data-placement="top" title="<?php if ($process["alert"]) echo $process["alert"]; ?> <?php echo $process['process_name'] ?> (Mem: <?php echo $process['used_gpu_memory'] ?> Mo) / Started: <?php echo $process['time'] ?>"><?php echo $process["pid"].'@<span class="user">'.$process["user"] ?></span> (<?php echo $process["usage"] ?>%)</span>
-                        <?php } ?>
+    <div class="server-panel">
+        <div class="server bg-dark p-3 text-light">
+            <div class="d-flex d-row align-items-center">
+                <h5 class="mb-0 flex-grow-1">
+                    <?php if ($deltaTSec < -500) { ?>
+                        <span class="badge badge-pill badge-danger mr-2" data-toggle="tooltip" data-placement="top" title="Data is not up to date for this server">
+                            <i class="material-icons">warning</i>
                         </span>
-                        <span class="d-inline d-sm-none">
-                            <a type="button" tabindex="0" role="button" class="btn btn-icon btn-sm btn-dark btn-process"><i class="material-icons">arrow_drop_down</i></a>
-                        </div>
-                    </td>
-                </tr>
-            <?php } ?>
-            </tbody>
-        </table>
+                    <?php } ?>
+                    <?php echo $hosttitle; ?>
+                </h5>
+                <div class="server-refresh mr-3">
+                    <i class="material-icons">access_time</i>
+                    <?php echo round($deltaT).$deltaTUnit.$deltaTDirection ?>
+                </div>
+                <button class="btn btn-light btn-sm btn-icon" data-toggle="collapse" data-target="#content_<?php echo $hostname ?>" aria-expanded="true" aria-controls="content_<?php echo $hostname ?>">
+                    <i class="material-icons icon-collapse"></i>
+                </button>
+            </div>
+            <div class="row mt-3">
+                <div class="col d-flex">
+                    <?php
+                    $bar_status = "success";
+                    if ($ram["usage"] > 35) $bar_status = "warning";
+                    if ($ram["usage"] > 70) $bar_status = "danger";
+                    ?>
+                    <span class="server-prefix badge badge-secondary">RAM</span>
+                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $ram['used'], $ram['total']); ?>">
+                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $ram["usage"] ?>%;" aria-valuenow="<?php echo $ram["usage"] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $ram["usage"] ?>%</div>
+                    </div>
+                </div>
+                <div class="col d-flex">
+                    <?php
+                    $bar_status = "success";
+                    if ($cpu > 35) $bar_status = "warning";
+                    if ($cpu > 70) $bar_status = "danger";
+                    ?>
+                    <span class="server-prefix badge badge-secondary">CPU</span>
+                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="A score > 100% means processes are waiting">
+                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $cpu ?>%;" aria-valuenow="<?php echo $cpu ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $cpu ?>%</div>
+                    </div>
+                </div>
+                <div class="col d-flex">
+                    <?php
+                    $bar_status = "success";
+                    if ($disk["usage"] > 35) $bar_status = "warning";
+                    if ($disk["usage"] > 70) $bar_status = "danger";
+                    ?>
+                    <span class="server-prefix badge badge-secondary">SSD</span>
+                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $disk['used'], $disk['total']); ?>">
+                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100">2<?php echo $disk["usage"] ?>%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="content_<?php echo $hostname ?>" class="panel-container collapse show">
+            <div class="px-3 pt-3">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col-index">#</th>
+                            <th scope="col" class="col-name">Name</th>
+                            <th scope="col" class="col-memory">Memory</th>
+                            <th scope="col" class="col-gpu">GPU</th>
+                            <th scope="col" class="col-reservation">Reservation</th>
+                            <th scope="col"><span class="d-none d-sm-inline">Processes <span class="badge badge-pill badge-secondary">pid@user (RAM)</span></span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($gpus as $gpu) { ?>
+                        <tr>
+                            <th scope="row" class="col-index"><?php echo $gpu['index']; ?></th>
+                            <td class="col-name">
+                                <span class="d-none d-sm-inline"><?php echo $SHORT_GPU_NAMES[$gpu['name']] ? '<span data-toggle="tooltip" title="'.$gpu['name'].'">'.$SHORT_GPU_NAMES[$gpu['name']].'</span>' : $gpu['name']; ?></span>
+                                <span class="d-inline d-sm-none"><?php echo $SHORTER_GPU_NAMES[$gpu['name']] ? '<span data-toggle="tooltip" title="'.$gpu['name'].'">'.$SHORTER_GPU_NAMES[$gpu['name']].'</span>' : $gpu['name']; ?></span>
+                                (<?php echo round($gpu['memory.total'] / 1000) ?> Go)
+                            </td>
+                            <td class="align-middle col-memory">
+                                <?php
+                                $bar_status = "success";
+                                if ($gpu['memory'] > 20) $bar_status = "warning";
+                                if ($gpu['memory'] > 60) $bar_status = "danger";
+                                ?>
+                                <div class="progress" data-toggle="tooltip" data-placement="top" title="<?php echo $gpu['memory.used'].'/'.$gpu['memory.total']; ?> Mo / Access rate: <?php echo $gpu["utilization.memory"] ?>%">
+                                    <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $gpu['memory'] ?>%;" aria-valuenow="<?php echo $gpu['memory'] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $gpu['memory'] ?>%</div>
+                                </div>
+                            </td>
+                            <td class="align-middle col-gpu">
+                                <?php
+                                $bar_status = "success";
+                                if ($gpu['utilization.gpu'] > 20) $bar_status = "warning";
+                                if ($gpu['utilization.gpu'] > 60) $bar_status = "danger";
+                                ?>
+                                <div class="progress" data-toggle="tooltip" data-placement="top" title="<?php echo $gpu['temperature.gpu']; ?> °C">
+                                    <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $gpu['utilization.gpu'] ?>%;" aria-valuenow="<?php echo $gpu['utilization.gpu'] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $gpu['utilization.gpu'] ?>%</div>
+                                </div>
+                            </td>
+
+                            <?php
+                            try {
+                                $comment = $COMMENTS[$hostname][$gpu['index']];
+
+                                $date = date_create($comment["date"]);
+                                $now = date_create();
+                                if ($date > $now)
+                                    $now->sub(new DateInterval("PT1H")); // remove 1h from now to round up diff to ceil instead of floor
+                                $diff = date_diff($now, $date);
+                                if ($diff->days >= 1)
+                                    $diff_disp = $diff->format("%ad");
+                                else
+                                    $diff_disp = $diff->format("%hh");
+
+                                if ($date < $now && $diff->days > 2)
+                                    throw new Exception("remove, too old");
+                            }
+                            catch (Exception $e) {
+                                $comment = array("date" => "", "name" => "", "comment" => ""); }
+                            ?>
+                            <td class="td-comment text-right col-reservation" data-name="<?php echo $comment["name"] ?>" data-comment="<?php echo $comment["comment"] ?>" data-date="<?php echo $comment["date"] ?>" data-host="<?php echo $hostname ?>" data-id="<?php echo $gpu['index'] ?>">
+                                <?php if ($comment["date"] && $comment["name"]) { ?>
+                                    <span class="d-inline-flex align-items-center badge badge-<?php echo ($date > $now) ? "danger" : "secondary"; ?>" data-toggle="tooltip" data-placement="top" title="<?php echo $comment["comment"]; ?>">
+                                        <?php
+                                            echo $comment["name"].' ('.$diff_disp.($date > $now ? "" : " ago").')';
+                                            if ($comment["comment"]) echo '&nbsp;&nbsp;<i class="material-icons">mode_comment</i>';
+                                        ?>
+                                    </span>
+                                <?php } ?>
+                                <button class="reservation-btn btn btn-icon btn-sm btn-primary"><i class="material-icons">edit</i></button>
+                            </td>
+                            <td class="text-right">
+                                <span class="d-none d-sm-inline process-content">
+                                <?php foreach ($gpu["processes"] as $process) { ?>
+                                    <?php
+                                    $process_status = "secondary";
+                                    if ($process["usage"] > 15) $process_status = "info";
+                                    if ($process["usage"] > 40) $process_status = "primary";
+                                    if ($process["alert"] !== false) $process_status = "danger";
+                                    ?>
+                                    <span class="process badge badge-<?php echo $process_status ?>" data-toggle="tooltip" data-placement="top" title="<?php if ($process["alert"]) echo $process["alert"]; ?> <?php echo $process['process_name'] ?> (Mem: <?php echo $process['used_gpu_memory'] ?> Mo) / Started: <?php echo $process['time'] ?>"><?php echo $process["pid"].'@<span class="user">'.$process["user"] ?></span> (<?php echo $process["usage"] ?>%)</span>
+                                <?php } ?>
+                                </span>
+                                <span class="d-inline d-sm-none">
+                                    <a type="button" tabindex="0" role="button" class="btn btn-icon btn-sm btn-dark btn-process"><i class="material-icons">arrow_drop_down</i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 <?php } // close foreach $HOSTS ?>
@@ -437,9 +447,13 @@ foreach ($HOSTS as $hostname => $hosttitle) {
             $('#hostInput').val(parent.data('host'));
             $("#reservationModal").modal("show");
         });
-    }
 
-    $(preparePage)
+        $('#btn_collapse_all').click(function() {
+            $('.collapse').collapse('toggle');
+            $(this).attr('aria-expanded', ($(this).attr('aria-expanded') == 'true' ? 'false' : 'true'));
+        });
+    }
+    $(preparePage);
 
     window.setInterval(function() {
         if (!($('#reservationModal').hasClass('show'))) {
