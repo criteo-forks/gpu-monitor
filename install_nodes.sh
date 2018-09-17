@@ -6,7 +6,7 @@ set -x
 set -e
 
 sudo mkdir -p /var/opt/gpu-monitor/scripts
-sudo cp ./scripts/* /var/opt/gpu-monitor/scripts
+sudo cp ./scripts/*.sh ./scripts/*.py /var/opt/gpu-monitor/scripts
 
 sudo cp ./scripts/init.d/* /etc/init.d
 
