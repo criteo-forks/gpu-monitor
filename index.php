@@ -33,23 +33,11 @@
 
 <?php
 
-$HOSTS = array(
-    "gputest001-pa4" => "gputest001-pa4.central.criteo.preprod",
-    "gputest002-pa4" => "gputest002-pa4.central.criteo.preprod",
-    "gputest003-pa4" => "gputest003-pa4.central.criteo.preprod",
-    "gputest004-pa4" => "gputest004-pa4.central.criteo.preprod",
-    "gputest005-pa4" => "gputest005-pa4.central.criteo.preprod",
-    "gputest006-pa4" => "gputest006-pa4.central.criteo.preprod",
-    "gputest007-pa4" => "gputest007-pa4.central.criteo.preprod",
-    "gputest008-pa4" => "gputest008-pa4.central.criteo.preprod",
-    "gputest009-pa4" => "gputest009-pa4.central.criteo.preprod",
-    "gputest010-pa4" => "gputest010-pa4.central.criteo.preprod",
-    "gputest011-pa4" => "gputest011-pa4.central.criteo.preprod",
-    "gputest012-pa4" => "gputest012-pa4.central.criteo.preprod",
-    "gputest013-pa4" => "gputest013-pa4.central.criteo.preprod",
-    "gputest014-pa4" => "gputest014-pa4.central.criteo.preprod",
-    "gputest015-pa4" => "gputest015-pa4.central.criteo.preprod",
-    "gputest016-pa4" => "gputest016-pa4.central.criteo.preprod");
+if (is_file("data/hosts.json"))
+    $HOSTS = json_decode(file_get_contents("data/hosts.json"), true);
+else
+    $HOSTS = array();
+
 $SHORT_GPU_NAMES = array(
 	"Tesla M40 24GB" => "Tesla M40",
         "Tesla V100-PCIE-16GB" => "Tesla V100");

@@ -1,8 +1,13 @@
+#! /usr/bin/env python
+
 import re
 import time
 import urllib
 import urllib2
+import json
+import os
 
+CONFIG_FILE=os.environ.get('FETCH_STATS_CONFIG', 'fetch_stats_conf.json')
 
 def get_file_names(url):
     response = urllib2.urlopen(url)
@@ -21,29 +26,49 @@ def download_files(url, list_files):
         if '_' in file_name:
             urllib.urlretrieve (url+'/'+file_name, file_name)
 
+def get_config():
+    if not os.path.isfile(CONFIG_FILE):
+        return None
+    with open(CONFIG_FILE) as f:
+        return json.loads(f.read())
 
-urls = ['http://gputest001-pa4.central.criteo.preprod:8114', 
-        'http://gputest002-pa4.central.criteo.preprod:8114', 
-        'http://gputest004-pa4.central.criteo.preprod:8114',
-        'http://gputest005-pa4.central.criteo.preprod:8114',
-        'http://gputest006-pa4.central.criteo.preprod:8114',
-        'http://gputest007-pa4.central.criteo.preprod:8114',
-        'http://gputest008-pa4.central.criteo.preprod:8114',
-        'http://gputest009-pa4.central.criteo.preprod:8114',
-        'http://gputest010-pa4.central.criteo.preprod:8114',
-        'http://gputest011-pa4.central.criteo.preprod:8114',
-        'http://gputest012-pa4.central.criteo.preprod:8114',
-        'http://gputest013-pa4.central.criteo.preprod:8114',
-        'http://gputest014-pa4.central.criteo.preprod:8114',
-        'http://gputest015-pa4.central.criteo.preprod:8114',
-        'http://gputest016-pa4.central.criteo.preprod:8114']
+def get_consul_uri():
+    cfg = get_config()
+    if cfg:
+        return cfg.get('CONSUL_SERVICE_URI',None)
+    else:
+        return None
 
-while True:
-    for url in urls:
-        try:
-            list_files = get_file_names(url)
-            download_files(url, list_files)
-        except:
-            pass
+def get_nodes():
+    consul_uri = get_consul_uri()
+    if not consul_uri:
+        print('[WARNING] Could not find consul service URI')
+        print('[WARNING] Please add a CONSUL_SERVICE_URI to ', CONFIG_FILE)
+        return []
+    response = urllib2.urlopen(consul_uri)
+    print('CODE: ', response.getcode())
+    if response.getcode() != 200:
+        return []
+    services = json.loads(response.read())
+    return [x['Node'] for x in services if 'Node' in x]
 
-    time.sleep(20)
+def get_urls(nodes):
+    return [ 'http://{}:8114'.format(node) for node in nodes ]
+
+def dump_hosts(nodes):
+    # used by the PHP page to know the list of ...hosts:
+    # as { short_name : fqdn }
+    with open('hosts.json', 'w+') as of:
+        of.write(json.dumps({ x.split('.')[0] : x for x in nodes  }))
+
+if __name__ == '__main__':
+    while True:
+        nodes = get_nodes()
+        for url in get_urls(nodes):
+            try:
+                list_files = get_file_names(url)
+                download_files(url, list_files)
+            except:
+                pass
+        dump_hosts(nodes)
+        time.sleep(20)

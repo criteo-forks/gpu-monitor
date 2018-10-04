@@ -1,0 +1,20 @@
+script:
+  - export VERSION=$(echo $TRAVIS_TAG | sed 's/^v//' )
+
+sudo: false
+
+before_deploy:
+  - echo "Deploying $VERSION(-$PRERELEASE) to GitHub releases"
+  - tar --exclude '*.tar.gz' -czf "gpu-monitor-$VERSION.tar.gz" .
+
+deploy:
+  provider: releases
+  api_key:
+    secure: c0SoffOXSIgvL/gBfyl85bPJL2sTuXlPYzusD/RZ5t8RL76tSSK3I/T94m/7KDkQbUTjCoKv8ZrPMDz+JAqDq+8RMP4nnEcxifKOHXs6yZZK2rRHRkbHIz/VY9UmPNc6fdhj8h1f+EGZ1/tfFxKt7Ij5FdogAR2vFdpVYiRUIJqmcpez2VK4aDzSmHC9Paqly9PVC50KXBIKNSRPn5JbttxyFxJP6Trjcd8H6Mw7lwxv38En8qAfd73ODDaWB8wvB3LtD8+mPtENU/YPB68R//KFh8uvtmdk3zFK9g8wck+8eyrbfR15b90kwsQYlMJKfP+zz/twatZTkow/2k82uIrkjJJvaFqQO6E4ZnkJY9y17pPfXn7rB9sapddmSqyBAYt6sg/M9QcyoXXfTeLciGE5j+jdyPq2mRBeRSf4Z6H43qYdLjc5DakjaF0zM3GzAUed0D+2kkE2Jmmaso9v/zTEm6BUUB2Jh2/Hexa08jY1KHni46kD2EPaeBj3AP0xw9ZNeneIfT5EA2QfKjXlo6iPHlbkg+5i0ObSMtZfe57zrJjQ5K0m9TTOlZTs0ivWDptBNL17O/OhbBR2twC8ZgZUH3uh9chHeNoNhOBJfGm4zvJoWJILxbeMl+Z97vCXe5VCdoLfrZt6txPe4xpTiEcmsPX+KDVQxsPBxxmeK1o=
+  file_glob: true
+  file: consul_*.zip
+  skip_cleanup: true
+  on:
+    repo: criteo-forks/gpu-monitor
+
+tags: true
