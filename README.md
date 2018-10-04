@@ -4,6 +4,12 @@ This is a tool intended to monitor the GPU usage on the various GPU-servers at t
 
 The principle is as follows. A bunch of Bash / Python scripts runs regularly `nvidia-smi` and `ps` to extract data and sends them to my `public_html` space. Each time someone wants to see the status of the GPUs, the page `index.php` reads the latest data files for each server and displays those.
 
+This is a fork of https://github.com/ThomasRobertFr/gpu-monitor, with following changes:
+* UI reworked
+* Bug fixes
+* Install scripts 
+* Consul discovery of GPU hosts
+
 ## How to setup
 
 ### Monitoring setup
@@ -51,7 +57,7 @@ To add reservations, it is possible to add booking information machine-by-machin
     { // an element with index 1, it corresponding to GPU1 of this machine
       "name": "SOMEONE_ELSE",
       "date": "SOME_WHERE_IN_A_PAST",  // this machine is not booked, datetime is in the past
-      "comment": "booked by Père Noël"
+      "comment": "booked by Pï¿½re Noï¿½l"
     }
   ],
   "gputest001-pa4": [  // GPU0 and GPU1 are reserved
@@ -63,7 +69,7 @@ To add reservations, it is possible to add booking information machine-by-machin
     {
       "name": "pnoel",
       "date": "2018-08-01 00:00",
-      "comment": "booked by Père Noël"
+      "comment": "booked by Pï¿½re Noï¿½l"
     }
   ],
   "gputest002-pa4": []  // no reservation info for this machine
