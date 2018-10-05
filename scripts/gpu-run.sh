@@ -19,7 +19,7 @@ if [ "$1" -eq "3" ]; then
         nproc --all >> $path/${HOST}_status.csv
         uptime >> $path/${HOST}_status.csv
 
-        python /var/opt/gpu-monitor/scripts/gpu-processes.py $path/processes.csv > $path/${HOST}_users.csv
+        python /var/opt/gpu-monitor/latest/scripts/gpu-processes.py $path/processes.csv > $path/${HOST}_users.csv
         echo $(uptime | grep -o -P ': \K[0-9]*[,]?[0-9]*')\;$(nproc) > $path/${HOST}_cpus.csv
         tail -n 20 $path/gpus.csv > $path/${HOST}_gpus.csv
         tail -n 40 $path/processes.csv > $path/${HOST}_processes.csv
