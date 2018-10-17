@@ -257,7 +257,7 @@ foreach ($HOSTS as $hostname => $hosttitle) {
                     ?>
                     <span class="server-prefix badge badge-secondary">SSD</span>
                     <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $disk['used'], $disk['total']); ?>">
-                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100">2<?php echo $disk["usage"] ?>%</div>
+                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $disk["usage"] ?>%</div>
                     </div>
                 </div>
             </div>
