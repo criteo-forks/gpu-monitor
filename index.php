@@ -157,7 +157,7 @@ foreach ($HOSTS as $hostname => $hosttitle) {
             $process["time"] = $users[$users_childs[$process["pid"]][0]]["time"];
             $process["alert"] .= ". Kill childs PIDs: ".implode($users_childs[$process["pid"]], ", ");
         }
-        $process["usage"] = round($process['used_gpu_memory'] / $gpus[$process["gpu_uuid"]]['memory.total'] * 100);
+        $process["usage"] = round(($process['used_gpu_memory']+0.001) / ($gpus[$process["gpu_uuid"]]['memory.total']+0.001) * 100);
         // if the process does not appear in ps and the gpu is not used, the process is probably dead but still appearing here because no running process was added by nvidia-smi
         if (!$users[$process["pid"]] && $gpus[$process["gpu_uuid"]]['memory.used'] < 10)
             continue;
@@ -167,16 +167,18 @@ foreach ($HOSTS as $hostname => $hosttitle) {
     $f = fopen('data/'.$hostname.'_status.csv', "r");
     $diskRaw = fgets($f);
     if (substr($diskRaw, 0, 3) != "Mem") {
-        preg_match("#^[^ ]+ +([^ ]+) +([^ ]+)#", $diskRaw, $diskRaw);
-        $disk = array("total" => round($diskRaw[1]/1024/1024, -1), "used" => round($diskRaw[2]/1024/1024, -1), "usage" => round($diskRaw[2] / $diskRaw[1] * 100));
-
+        $diskRaw = preg_split("#\s+#", $diskRaw);
+        $disk = array(
+                "total" => round($diskRaw[1]/1024/1024, -1),
+                "used" => round($diskRaw[2]/1024/1024, -1),
+                "usage" => round(($diskRaw[2]+0.001) / ($diskRaw[1]+0.001) * 100));
         $ramRaw = fgets($f);
     }
     else {
         $disk = array("total" => 0, "used" => 0, "usage" => 0);
     }
     preg_match("#^[^ ]+ +([^ ]+) +([^ ]+)#", $ramRaw, $ramRaw);
-    $ram = array("total" => round($ramRaw[1] / 1024), "used" => round($ramRaw[2] / 1024), "usage" => round($ramRaw[2] / $ramRaw[1] * 100));
+    $ram = array("total" => round($ramRaw[1] / 1024), "used" => round($ramRaw[2] / 1024), "usage" => round(($ramRaw[2]+0.001) / ($ramRaw[1]+0.001) * 100));
 
     //// based on top
     //$cpuRaw = fgets($f);
@@ -271,7 +273,7 @@ foreach ($HOSTS as $hostname => $hosttitle) {
                     ?>
                     <span class="server-prefix badge badge-secondary">SSD</span>
                     <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $disk['used'], $disk['total']); ?>">
-                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100">2<?php echo $disk["usage"] ?>%</div>
+                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $disk["usage"] ?>%</div>
                     </div>
                 </div>
                 <!-- END TODO: [CML-52] -->
