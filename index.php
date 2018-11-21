@@ -38,6 +38,8 @@ if (is_file("data/hosts.json"))
 else
     $HOSTS = array();
 
+ksort($HOSTS);
+
 $SHORT_GPU_NAMES = array(
 	"Tesla M40 24GB" => "Tesla M40",
         "Tesla V100-PCIE-16GB" => "Tesla V100");
