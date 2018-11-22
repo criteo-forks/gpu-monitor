@@ -262,6 +262,19 @@ foreach ($HOSTS as $hostname => $hosttitle) {
                         <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $disk["usage"] ?>%</div>
                     </div>
                 </div>
+                <!-- TODO: [CML-52] Link to data logic -->
+                <div class="col d-flex">
+                    <?php
+                    $bar_status = "success";
+                    if ($disk["usage"] > 35) $bar_status = "warning";
+                    if ($disk["usage"] > 70) $bar_status = "danger";
+                    ?>
+                    <span class="server-prefix badge badge-secondary">SSD</span>
+                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $disk['used'], $disk['total']); ?>">
+                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100">2<?php echo $disk["usage"] ?>%</div>
+                    </div>
+                </div>
+                <!-- END TODO: [CML-52] -->
             </div>
         </div>
         <div id="content_<?php echo $hostname ?>" class="panel-container collapse show">
