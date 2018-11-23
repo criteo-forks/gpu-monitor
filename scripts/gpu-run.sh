@@ -13,6 +13,7 @@ fi
 
 if [ "$1" -eq "3" ]; then
     while true; do
+        df -lP > $path/${HOST}_disks.csv
         df -l | grep " /$" > $path/${HOST}_status.csv
         free -m | grep "Mem" >> $path/${HOST}_status.csv
         #top -b -n 1 | grep %Cpu >> $path/${HOST}_status.csv
