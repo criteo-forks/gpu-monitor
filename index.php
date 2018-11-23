@@ -38,7 +38,7 @@ function parse_df_file($filename){
     <![endif]-->
   </head>
   <body>
-    <div class="container-fluid">
+    <div id="main_container" class="mx-3">
 
 <?php } ?>
 
@@ -237,77 +237,81 @@ foreach ($HOSTS as $hostname => $hosttitle) {
     ?>
 
     <div class="server-panel">
-        <div class="server bg-dark p-3 text-light">
-            <div class="d-flex d-row align-items-center">
-                <h5 class="mb-0 flex-grow-1">
-                    <?php if ($deltaTSec < -500) { ?>
-                        <span class="badge badge-pill badge-danger mr-2" data-toggle="tooltip" data-placement="top" title="Data is not up to date for this server">
-                            <i class="material-icons">warning</i>
-                        </span>
-                    <?php } ?>
-                    <?php echo $hosttitle; ?>
-                </h5>
-                <div class="server-refresh mr-3">
-                    <i class="material-icons">access_time</i>
-                    <?php echo round($deltaT).$deltaTUnit.$deltaTDirection ?>
+        <div class="server bg-dark py-2 px-3 text-light">
+            <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center">
+                <div class="server-header-title mb-2 mb-md-0">
+                    <h6>
+                        <?php if ($deltaTSec < -500) { ?>
+                            <span class="badge badge-pill badge-danger mr-2" data-toggle="tooltip" data-placement="top" title="Data is not up to date for this server">
+                                <i class="material-icons">warning</i>
+                            </span>
+                        <?php } ?>
+                        <?php echo $hosttitle; ?>
+                    </h6>
+                    <div class="server-refresh mr-3">
+                        <i class="material-icons">access_time</i>
+                        <?php echo round($deltaT).$deltaTUnit.$deltaTDirection ?>
+                    </div>
                 </div>
-                <button class="btn btn-light btn-sm btn-icon" data-toggle="collapse" data-target="#content_<?php echo $hostname ?>" aria-expanded="true" aria-controls="content_<?php echo $hostname ?>">
+
+                <div class="row flex-grow-1 no-gutters">
+                    <div class="col d-flex mr-2">
+                        <?php
+                        $bar_status = "success";
+                        if ($ram["usage"] > 35) $bar_status = "warning";
+                        if ($ram["usage"] > 70) $bar_status = "danger";
+                        ?>
+                        <span class="server-prefix badge badge-secondary">RAM</span>
+                        <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $ram['used'], $ram['total']); ?>">
+                            <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $ram["usage"] ?>%;" aria-valuenow="<?php echo $ram["usage"] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $ram["usage"] ?>%</div>
+                        </div>
+                    </div>
+                    <div class="col d-flex mr-2">
+                        <?php
+                        $bar_status = "success";
+                        if ($cpu > 35) $bar_status = "warning";
+                        if ($cpu > 70) $bar_status = "danger";
+                        ?>
+                        <span class="server-prefix badge badge-secondary">CPU</span>
+                        <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="A score > 100% means processes are waiting">
+                            <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $cpu ?>%;" aria-valuenow="<?php echo $cpu ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $cpu ?>%</div>
+                        </div>
+                    </div>
+                    <div class="col d-flex mr-2">
+                        <?php
+                        $bar_status = "success";
+                        $disk_name = "/";
+                        $used = $disks[$disk_name]["used"];
+                        $total = $disks[$disk_name]["total"];
+                        $usage = $disks[$disk_name]["usage"];
+                        if ($usage > 35) $bar_status = "warning";
+                        if ($usage > 70) $bar_status = "danger";
+                        ?>
+                        <span class="server-prefix badge badge-secondary"><?php echo $disk_name ?></span>
+                        <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $used, $total); ?>">
+                            <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $usage ?>%;" aria-valuenow="<?php echo $usage ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $usage ?>%</div>
+                        </div>
+                    </div>
+                    <div class="col d-flex">
+                        <?php
+                        $bar_status = "success";
+                        $disk_name = "/var/opt";
+                        $used = $disks[$disk_name]["used"];
+                        $total = $disks[$disk_name]["total"];
+                        $usage = $disks[$disk_name]["usage"];
+                        if ($usage > 35) $bar_status = "warning";
+                        if ($usage > 70) $bar_status = "danger";
+                        ?>
+                        <span class="server-prefix badge badge-secondary"><?php echo $disk_name ?></span>
+                        <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $used, $total); ?>">
+                            <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $usage ?>%;" aria-valuenow="<?php echo $usage ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $usage ?>%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-light btn-sm btn-icon ml-0 ml-md-3 mt-2 mt-md-0" data-toggle="collapse" data-target="#content_<?php echo $hostname ?>" aria-expanded="true" aria-controls="content_<?php echo $hostname ?>">
                     <i class="material-icons icon-collapse"></i>
                 </button>
-            </div>
-            <div class="row mt-3">
-                <div class="col d-flex">
-                    <?php
-                    $bar_status = "success";
-                    if ($ram["usage"] > 35) $bar_status = "warning";
-                    if ($ram["usage"] > 70) $bar_status = "danger";
-                    ?>
-                    <span class="server-prefix badge badge-secondary">RAM</span>
-                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $ram['used'], $ram['total']); ?>">
-                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $ram["usage"] ?>%;" aria-valuenow="<?php echo $ram["usage"] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $ram["usage"] ?>%</div>
-                    </div>
-                </div>
-                <div class="col d-flex">
-                    <?php
-                    $bar_status = "success";
-                    if ($cpu > 35) $bar_status = "warning";
-                    if ($cpu > 70) $bar_status = "danger";
-                    ?>
-                    <span class="server-prefix badge badge-secondary">CPU</span>
-                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="A score > 100% means processes are waiting">
-                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $cpu ?>%;" aria-valuenow="<?php echo $cpu ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $cpu ?>%</div>
-                    </div>
-                </div>
-                <div class="col d-flex">
-                    <?php
-                    $bar_status = "success";
-                    $disk_name = "/";
-                    $used = $disks[$disk_name]["used"];
-                    $total = $disks[$disk_name]["total"];
-                    $usage = $disks[$disk_name]["usage"];
-                    if ($usage > 35) $bar_status = "warning";
-                    if ($usage > 70) $bar_status = "danger";
-                    ?>
-                    <span class="server-prefix badge badge-secondary"><?php echo $disk_name ?></span>
-                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $used, $total); ?>">
-                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $usage ?>%;" aria-valuenow="<?php echo $usage ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $usage ?>%</div>
-                    </div>
-                </div>
-                <div class="col d-flex">
-                    <?php
-                    $bar_status = "success";
-                    $disk_name = "/var/opt";
-                    $used = $disks[$disk_name]["used"];
-                    $total = $disks[$disk_name]["total"];
-                    $usage = $disks[$disk_name]["usage"];
-                    if ($usage > 35) $bar_status = "warning";
-                    if ($usage > 70) $bar_status = "danger";
-                    ?>
-                    <span class="server-prefix badge badge-secondary"><?php echo $disk_name ?></span>
-                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $used, $total); ?>">
-                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $usage ?>%;" aria-valuenow="<?php echo $usage ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $usage ?>%</div>
-                    </div>
-                </div>
             </div>
         </div>
         <div id="content_<?php echo $hostname ?>" class="panel-container collapse show">
@@ -485,8 +489,13 @@ foreach ($HOSTS as $hostname => $hosttitle) {
         });
 
         $('#btn_collapse_all').click(function() {
-            $('.collapse').collapse('toggle');
-            $(this).attr('aria-expanded', ($(this).attr('aria-expanded') == 'true' ? 'false' : 'true'));
+            if ( $(this).attr('aria-expanded') == 'true' ) {
+                $('.collapse').collapse('hide');
+                $(this).attr('aria-expanded', false);
+            } else {
+                $('.collapse').collapse('show');
+                $(this).attr('aria-expanded', true);
+            }
         });
     }
     $(preparePage);
@@ -494,7 +503,7 @@ foreach ($HOSTS as $hostname => $hosttitle) {
     window.setInterval(function() {
         if (!($('#reservationModal').hasClass('show'))) {
             $.get("?content", {}, function (data) {
-                $('.container-fluid').html(data);
+                $('#main_container').html(data);
                 preparePage();
             })
         }

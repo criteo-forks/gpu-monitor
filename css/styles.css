@@ -44,10 +44,16 @@ button:focus, .btn:focus{
 }
 
 .server-panel {
-  border-radius: 15px;
   border: 1px solid #343a40;
-  margin-bottom: 3rem;
+  margin-bottom: 1px;
   overflow: hidden;
+}
+
+.server-header-title {
+  width: 30%;
+  max-width: 400px;
+  min-width: 300px;
+  margin-right: 5px;
 }
 
 .server-refresh {
