@@ -485,8 +485,13 @@ foreach ($HOSTS as $hostname => $hosttitle) {
         });
 
         $('#btn_collapse_all').click(function() {
-            $('.collapse').collapse('toggle');
-            $(this).attr('aria-expanded', ($(this).attr('aria-expanded') == 'true' ? 'false' : 'true'));
+            if ( $(this).attr('aria-expanded') == 'true' ) {
+                $('.collapse').collapse('hide');
+                $(this).attr('aria-expanded', false);
+            } else {
+                $('.collapse').collapse('show');
+                $(this).attr('aria-expanded', true);
+            }
         });
     }
     $(preparePage);
