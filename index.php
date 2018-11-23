@@ -1,5 +1,24 @@
 <?php if (!isset($_GET["content"])) { ?>
 
+<?php
+function parse_df_file($filename){
+    $disks = array();
+    foreach(file($filename) as $line){
+            $tokens = preg_split("#\s+#", $line);
+            if(stripos($tokens[0], '/dev/') === false) {
+                    continue;
+            }
+            echo "$tokens[5]\n";
+            $disks[ $tokens[5] ] = array(
+                    "total" => round($tokens[1]/1024/1024, -1),
+                    "used" => round($tokens[2]/1024/1024, -1),
+                    "usage" => trim($tokens[4],'%')
+            );
+    }
+    return $disks;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -164,19 +183,26 @@ foreach ($HOSTS as $hostname => $hosttitle) {
         $gpus[$process["gpu_uuid"]]["processes"][$process["pid"]] = $process;
     }
 
+    $disks = array(
+        "/" => array("total" => 0, "used" => 0, "usage" => 0),
+        "/var/opt" => array("total" => 0, "used" => 0, "usage" => 0)
+    );
+
     $f = fopen('data/'.$hostname.'_status.csv', "r");
     $diskRaw = fgets($f);
     if (substr($diskRaw, 0, 3) != "Mem") {
         $diskRaw = preg_split("#\s+#", $diskRaw);
-        $disk = array(
+        $disks["/"] = array(
                 "total" => round($diskRaw[1]/1024/1024, -1),
                 "used" => round($diskRaw[2]/1024/1024, -1),
                 "usage" => round(($diskRaw[2]+0.001) / ($diskRaw[1]+0.001) * 100));
         $ramRaw = fgets($f);
     }
-    else {
-        $disk = array("total" => 0, "used" => 0, "usage" => 0);
+
+    if(file_exists('data/'.$hostname.'_disks.csv')){
+        $disks = parse_df_file('data/'.$hostname.'_disks.csv');
     }
+
     preg_match("#^[^ ]+ +([^ ]+) +([^ ]+)#", $ramRaw, $ramRaw);
     $ram = array("total" => round($ramRaw[1] / 1024), "used" => round($ramRaw[2] / 1024), "usage" => round(($ramRaw[2]+0.001) / ($ramRaw[1]+0.001) * 100));
 
@@ -256,27 +282,33 @@ foreach ($HOSTS as $hostname => $hosttitle) {
                 <div class="col d-flex">
                     <?php
                     $bar_status = "success";
-                    if ($disk["usage"] > 35) $bar_status = "warning";
-                    if ($disk["usage"] > 70) $bar_status = "danger";
+                    $disk_name = "/";
+                    $used = $disks[$disk_name]["used"];
+                    $total = $disks[$disk_name]["total"];
+                    $usage = $disks[$disk_name]["usage"];
+                    if ($usage > 35) $bar_status = "warning";
+                    if ($usage > 70) $bar_status = "danger";
                     ?>
-                    <span class="server-prefix badge badge-secondary">SSD</span>
-                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $disk['used'], $disk['total']); ?>">
-                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $disk["usage"] ?>%</div>
+                    <span class="server-prefix badge badge-secondary"><?php echo $disk_name ?></span>
+                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $used, $total); ?>">
+                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $usage ?>%;" aria-valuenow="<?php echo $usage ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $usage ?>%</div>
                     </div>
                 </div>
-                <!-- TODO: [CML-52] Link to data logic -->
                 <div class="col d-flex">
                     <?php
                     $bar_status = "success";
-                    if ($disk["usage"] > 35) $bar_status = "warning";
-                    if ($disk["usage"] > 70) $bar_status = "danger";
+                    $disk_name = "/var/opt";
+                    $used = $disks[$disk_name]["used"];
+                    $total = $disks[$disk_name]["total"];
+                    $usage = $disks[$disk_name]["usage"];
+                    if ($usage > 35) $bar_status = "warning";
+                    if ($usage > 70) $bar_status = "danger";
                     ?>
-                    <span class="server-prefix badge badge-secondary">SSD</span>
-                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $disk['used'], $disk['total']); ?>">
-                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $disk["usage"] ?>%;" aria-valuenow="<?php echo $disk["usage"] ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $disk["usage"] ?>%</div>
+                    <span class="server-prefix badge badge-secondary"><?php echo $disk_name ?></span>
+                    <div class="progress w-100" data-toggle="tooltip" data-placement="top" title="<?php printf("%d/%d Go", $used, $total); ?>">
+                        <div class="progress-bar bg-<?php echo $bar_status ?>" role="progressbar" style="width: <?php echo $usage ?>%;" aria-valuenow="<?php echo $usage ?>" aria-valuemin="0" aria-valuemax="100"><?php echo $usage ?>%</div>
                     </div>
                 </div>
-                <!-- END TODO: [CML-52] -->
             </div>
         </div>
         <div id="content_<?php echo $hostname ?>" class="panel-container collapse show">
