@@ -43,7 +43,10 @@ function parse_df_file($filename){
 <?php } ?>
 
     <div class="page-header mt-3 mb-5">
-        <h1>GPU Status <small class="d-none d-sm-inline">(Refreshed every 30 seconds)</small><a href="https://gitlab.criteois.com/rat/gpu-monitor" style="float:right"><img src="css/gitlab_logo_white.svg" height="20px"></a></h1>
+        <h1>GPU Status <small class="d-none d-sm-inline">(Refreshed every 30 seconds)</small><a href="https://github.com/criteo-forks/gpu-monitor" style="float:right"><img src="css/GitHub-Mark-32px.png" height="32px"></a></h1>
+    </div>
+    <div class="mb-3 text-left">
+        <a href="http://go/GPUsPlaybook" style="float:left">Experimentation GPUs Playbook</a>
     </div>
     <div class="mb-3 text-right">
         <button id="btn_collapse_all" class="btn btn-secondary btn-sm" aria-expanded="true"></button>
