@@ -45,6 +45,10 @@ function parse_df_file($filename){
     <div class="page-header mt-3 mb-5">
         <h1>GPU Status <small class="d-none d-sm-inline">(Refreshed every 30 seconds)</small><a href="https://github.com/criteo-forks/gpu-monitor" style="float:right"><img src="css/GitHub-Mark-32px.png" height="32px"></a></h1>
     </div>
+    <div class="mt-3 text-center" style="background-color:red;color:white">
+        <h4>GPU Experimental Cluster will be decommissionned (date to be defined).</h4>
+        <h4>You can use <a href="http://go/mozart">Mozart</a> as an alternative which provides personal gateways with or without GPU and CPUIORAM on Mesos.</h4>
+    </div>
     <div class="mb-3 text-left">
         <a href="http://go/GPUsPlaybook" style="float:left">Experimentation GPUs Playbook</a>
     </div>
